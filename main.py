@@ -1,8 +1,20 @@
 # main.py
-import images.npy_image as npy_i
+from os import sys
+import logging
+import routes.routing_planner as rp
 
-MAP_FILE = 'data/map.npy'
-MAP_SCALE = 10.0174
+START_X = 2850
+START_Y = 6400
+END_X = 3150
+END_Y = 6800
 
-map = npy_i.NpyImage(MAP_FILE, MAP_SCALE)
-map.showImage('Rover Route Planning', 'Mars Map Overview')
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(filename)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+manager = rp.RoverManager()
+path = manager.findRoute(START_X, START_Y, END_X, END_Y)
+manager.map_image.showImageWithPath('Rover Route Planning', 'Mars Map Overview', path)
