@@ -17,4 +17,5 @@ logging.basicConfig(
 )
 manager = rp.RoverManager()
 path = manager.findRoute(START_X, START_Y, END_X, END_Y)
-manager.map_image.showImageWithPath('Rover Route Planning', 'Mars Map Overview', path)
+manager.map_image.showImageWithPath(
+    'Rover Route Planning', 'Mars Map Overview', path, rp.MAP_SCALE)
