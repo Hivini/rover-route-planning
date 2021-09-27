@@ -1,12 +1,14 @@
 # main.py
-from os import sys
 import logging
 import routes.routing_planner as rp
+import time
+from routes.utils import SearchAlgorithm
+from matplotlib import pyplot as plt
 
-START_X = 2850
-START_Y = 6400
-END_X = 3150
-END_Y = 6800
+START_X = 1435
+START_Y = 13000
+END_X = 4600
+END_Y = 3000
 
 logging.basicConfig(
     level=logging.INFO,
@@ -16,6 +18,17 @@ logging.basicConfig(
     ]
 )
 manager = rp.RoverManager()
-path = manager.findRoute(START_X, START_Y, END_X, END_Y)
-manager.map_image.showImageWithPath(
-    'Rover Route Planning', 'Mars Map Overview', path, rp.MAP_SCALE)
+manager.map_image.showImagePoints(
+    'Rouver Points', 'Mars Map Overview', (START_X, START_Y), (END_X, END_Y))
+start = time.time()
+path = manager.findRoute(START_X, START_Y, END_X,
+                         END_Y, SearchAlgorithm.ASTAR)
+end = time.time()
+logging.info(f"Time elapsed: %.4fs.", end - start)
+if path:
+    manager.map_image.showImageWithPath(
+        'Rover Route Planning', 'Mars Map Overview', path, rp.MAP_SCALE)
+else:
+    logging.info(f"No solution was found for x: %d y: %d to x: %d y: %d",
+                 START_X, START_Y, END_X, END_Y)
+plt.show()

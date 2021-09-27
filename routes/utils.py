@@ -1,5 +1,14 @@
 import numpy as np
+
 from typing import Tuple
+from enum import Enum
+
+
+class SearchAlgorithm(Enum):
+    ASTAR = 0
+    BREADTH_FIRST = 1
+    DEPTH_FIRST = 2
+    GREEDY_BEST_FIRST = 3
 
 
 def convertToRC(x: int, y: int, map_image: np.array, scale: float) -> Tuple[int, int]:

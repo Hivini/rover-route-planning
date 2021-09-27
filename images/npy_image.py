@@ -61,7 +61,20 @@ class NpyImage(object):
         fig, image, ax = self.setBaseImage(window_title, figure_title)
         cbar = fig.colorbar(image, ax=ax)
         cbar.ax.set_ylabel('Height (m)')
-        plt.show()
+
+    def showImagePoints(self, window_title: str, figure_title: str, start_point: Tuple[int, int], end_point: Tuple[int]) -> None:
+        """Displays the NPY image using Matplot.
+
+        This implementation is based from the professor's one but to a new version
+        of matplotlib, to make it look similar.
+        """
+        fig, image, ax = self.setBaseImage(window_title, figure_title)
+        plt.plot([start_point[0]], [start_point[1]],
+                 marker='o', markersize=5, color="blue")
+        plt.plot([end_point[0]], [end_point[1]],
+                 marker='x', markersize=5, color="green")
+        cbar = fig.colorbar(image, ax=ax)
+        cbar.ax.set_ylabel('Height (m)')
 
     def showImageWithPath(self, window_title: str, figure_title: str, path: List[Tuple[int, int]], scale) -> None:
         """Same us showImage but with the path as a line."""
@@ -74,4 +87,3 @@ class NpyImage(object):
         ax.add_line(line)
         cbar = fig.colorbar(image, ax=ax)
         cbar.ax.set_ylabel('Height (m)')
-        plt.show()
