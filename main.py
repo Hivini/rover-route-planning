@@ -5,10 +5,10 @@ import time
 from routes.utils import SearchAlgorithm
 from matplotlib import pyplot as plt
 
-START_X = 1435
-START_Y = 13000
-END_X = 4600
-END_Y = 3000
+START_X = 1
+START_Y = 2
+END_X = 3
+END_Y = 4
 
 logging.basicConfig(
     level=logging.INFO,
