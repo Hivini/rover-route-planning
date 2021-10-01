@@ -135,11 +135,15 @@ class RouteCache:
         """Finds a path using the graph."""
         start_closests = self._findClosestList(start_point)
         end_closests = self._findClosestList(end_point)
-        start_path, start_closest = self._findPathOfListNodes(rm, start_point, start_closests, search_algorithm)
-        end_path, end_closest = self._findPathOfListNodes(rm, end_point, end_closests, search_algorithm)
+        start_path, start_closest = self._findPathOfListNodes(
+            rm, start_point, start_closests, search_algorithm)
+        end_path, end_closest = self._findPathOfListNodes(
+            rm, end_point, end_closests, search_algorithm)
         if self._findDistance(start_point, end_point) < self._findDistance(start_point, start_closest.point) + self._findDistance(end_point, end_closest.point):
-            path = rm.findRoute(start_point[0], start_point[1], end_point[0], end_point[1], search_algorithm)
-            rm.map_image.showImageWithSinglePath('Rover Route Planning', 'Mars Map Overview', path, list(POINTS.values()), list(POINTS.keys()), start_point, end_point)
+            path = rm.findRoute(
+                start_point[0], start_point[1], end_point[0], end_point[1], search_algorithm)
+            rm.map_image.showImageWithSinglePath('Rover Route Planning', 'Mars Map Overview', path, list(
+                POINTS.values()), list(POINTS.keys()), start_point, end_point)
             return path
         graph_nodes = self._findGraphPath(start_closest, end_closest)
         graph_path = []
@@ -164,7 +168,8 @@ class RouteCache:
     def _findPathOfListNodes(self, rm: RoverManager, point: Tuple[int, int], closests: List[Node], search_algorithm: SearchAlgorithm):
         """Returns the closest possible node of the graph."""
         for n in closests:
-            path = rm.findRoute(point[0], point[1], n.point[0], n.point[1], search_algorithm=search_algorithm)
+            path = rm.findRoute(
+                point[0], point[1], n.point[0], n.point[1], search_algorithm=search_algorithm)
             if path:
                 return path, n
         raise Exception('No path found for closest node of start or end.')
