@@ -6,7 +6,7 @@ import numpy as np
 from typing import Tuple, List
 
 from numpy.lib import math
-from routes.routing_planner import RoverManager
+from routes.routing_planner import MAP_SCALE, RoverManager
 from routes.utils import SearchAlgorithm
 
 POINTS = {
@@ -121,7 +121,9 @@ class RouteCache:
                 nodeB.point = POINTS[b]
                 nodes.append(nodeB)
             nodeB.next.append(a)
-            nodeB.paths.append(self.existingPaths[i])
+            invertedCoolKid = self.existingPaths[i].copy()
+            invertedCoolKid.reverse()
+            nodeB.paths.append(invertedCoolKid)
         return nodes
 
     def printGraph(self):
@@ -141,14 +143,12 @@ class RouteCache:
         if not end_path:
             raise Exception('No path found for end point to closest node')
         graph_nodes = self._findGraphPath(start_closest, end_closest)
-
         graph_path = []
         past = graph_nodes[0]
         for i in range(1, len(graph_nodes)):
             index = -1
             for idx, val in enumerate(past.next):
-                if val == graph_nodes[idx].name:
-                    print()
+                if val == graph_nodes[i].name:
                     index = idx
                     break
             graph_path.extend(past.paths[index])
@@ -158,6 +158,8 @@ class RouteCache:
         fullPath.extend(graph_path)
         end_path.reverse()
         fullPath.extend(end_path)
+        rm.map_image.showImageWithSinglePath('Rover Route Planning', 'Mars Map Overview', fullPath, list(
+            POINTS.values()), list(POINTS.keys()), start_point, end_point)
         return fullPath
 
     def _findGraphPath(self, start: Node, end: Node):
@@ -165,9 +167,6 @@ class RouteCache:
         aa = self._findHelper(start, end, history)
         if not aa:
             raise Exception('F')
-        print('HIIIISTORY')
-        for h in aa:
-            print(h.name)
         return aa
 
     def _findHelper(self, current: Node, end: Node, history: List[Node]):

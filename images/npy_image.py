@@ -62,7 +62,7 @@ class NpyImage(object):
         cbar = fig.colorbar(image, ax=ax)
         cbar.ax.set_ylabel('Height (m)')
 
-    def showImagePoints(self, window_title: str, figure_title: str, start_point: Tuple[int, int], end_point: Tuple[int]) -> None:
+    def showImagePoints(self, window_title: str, figure_title: str, start_point: Tuple[int, int], end_point: Tuple[int, int]) -> None:
         """Displays the NPY image using Matplot.
 
         This implementation is based from the professor's one but to a new version
@@ -88,12 +88,12 @@ class NpyImage(object):
             ax.add_line(line)
             for i in range(len(points)):
                 plt.plot([points[i][0]], [points[i][1]],
-                    marker='o', markersize=3, color="black")
+                         marker='o', markersize=3, color="black")
                 ax.text(points[i][0] + 50, points[i][1], names[i])
         cbar = fig.colorbar(image, ax=ax)
         cbar.ax.set_ylabel('Height (m)')
 
-    def showImageWithSinglePath(self, window_title: str, figure_title: str, path: List[Tuple[int, int]]) -> None:
+    def showImageWithSinglePath(self, window_title: str, figure_title: str, path: List[Tuple[int, int]], points: List[Tuple[int, int]], names: List[str], start_point: Tuple[int, int], end_point: Tuple[int, int]) -> None:
         """Same us showImage but with the path as a line."""
         fig, image, ax = self.setBaseImage(window_title, figure_title)
         newPath = []
@@ -104,6 +104,14 @@ class NpyImage(object):
         ax.add_line(line)
         cbar = fig.colorbar(image, ax=ax)
         cbar.ax.set_ylabel('Height (m)')
+        for i in range(len(points)):
+            plt.plot([points[i][0]], [points[i][1]],
+                     marker='o', markersize=2, color="black")
+            ax.text(points[i][0], points[i][1], names[i])
+        plt.plot([start_point[0]], [start_point[1]],
+                 marker='o', markersize=8, color="green")
+        plt.plot([end_point[0]], [end_point[1]],
+                 marker='o', markersize=8, color="red")
 
     def showImagePointsMultiple(self, window_title: str, figure_title: str, points: List[Tuple[int, int]], names: List[str]) -> None:
         """Displays the NPY image using Matplot.
@@ -114,7 +122,7 @@ class NpyImage(object):
         fig, image, ax = self.setBaseImage(window_title, figure_title)
         for i in range(len(points)):
             plt.plot([points[i][0]], [points[i][1]],
-                marker='o', markersize=5, color="black")
+                     marker='o', markersize=5, color="black")
             ax.text(points[i][0] + 20, points[i][1], names[i])
         cbar = fig.colorbar(image, ax=ax)
         cbar.ax.set_ylabel('Height (m)')
@@ -122,13 +130,9 @@ class NpyImage(object):
     def showImageWithLines(self, window_title: str, figure_title: str, connections: List[Tuple[Tuple[int, int], Tuple[int, int]]], scale) -> None:
         """Same us showImage but with the path as a line."""
         fig, image, ax = self.setBaseImage(window_title, figure_title)
-        newPath = []
-        # for x, y in path:
-        #     newPath.append(convertToImagePoint(x, y, self, rp.MAP_SCALE))
         for c in connections:
             x, y = zip(*c)
             line = mlines.Line2D(x, y, lw=2)
             ax.add_line(line)
         cbar = fig.colorbar(image, ax=ax)
         cbar.ax.set_ylabel('Height (m)')
-
