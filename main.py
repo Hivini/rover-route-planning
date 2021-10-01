@@ -5,8 +5,8 @@ import routes.routing_planner as rp
 import time
 from matplotlib import pyplot as plt
 
-START_X = 3300
-START_Y = 6800
+START_X = 2485
+START_Y = 8039
 END_X = 2200
 END_Y = 8210
 

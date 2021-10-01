@@ -1,3 +1,41 @@
 # Intelligent Systems Project
 
-Info TBA.
+Example points:
+
+```python
+# POINT 1
+START_X = 2485
+START_Y = 8039
+END_X = 2200
+END_Y = 8210
+
+# POINT 2
+START_X = 3200
+START_Y = 6700
+END_X = 3300
+END_Y = 6900
+
+# POINT 3
+START_X = 3300
+START_Y = 6800
+END_X = 3200
+END_Y = 8210
+
+# POINT 4
+START_X = 3300
+START_Y = 6800
+END_X = 2200
+END_Y = 8210
+
+# POINT 5
+START_X = 1435
+START_Y = 13000
+END_X = 4600
+END_Y = 3000
+
+# POINT 6
+START_X = 6852
+START_Y = 4736
+END_X = 5829
+END_Y = 5484
+```
