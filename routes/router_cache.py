@@ -132,16 +132,15 @@ class RouteCache:
                 print(n.name, '->', child)
 
     def findPath(self, rm: RoverManager, start_point: Tuple[int, int], end_point: Tuple[int, int], search_algorithm: SearchAlgorithm = SearchAlgorithm.ASTAR):
-        start_closest = self._findClosest(start_point)
-        end_closest = self._findClosest(end_point)
-        start_path = rm.findRoute(
-            start_point[0], start_point[1], start_closest.point[0], start_closest.point[1])
-        if not start_path:
-            raise Exception('No path found for start point to closest node')
-        end_path = rm.findRoute(
-            end_point[0], end_point[1], end_closest.point[0], end_closest.point[1])
-        if not end_path:
-            raise Exception('No path found for end point to closest node')
+        """Finds a path using the graph."""
+        start_closests = self._findClosestList(start_point)
+        end_closests = self._findClosestList(end_point)
+        start_path, start_closest = self._findPathOfListNodes(rm, start_point, start_closests, search_algorithm)
+        end_path, end_closest = self._findPathOfListNodes(rm, end_point, end_closests, search_algorithm)
+        if self._findDistance(start_point, end_point) < self._findDistance(start_point, start_closest.point) + self._findDistance(end_point, end_closest.point):
+            path = rm.findRoute(start_point[0], start_point[1], end_point[0], end_point[1], search_algorithm)
+            rm.map_image.showImageWithSinglePath('Rover Route Planning', 'Mars Map Overview', path, list(POINTS.values()), list(POINTS.keys()), start_point, end_point)
+            return path
         graph_nodes = self._findGraphPath(start_closest, end_closest)
         graph_path = []
         past = graph_nodes[0]
@@ -162,7 +161,16 @@ class RouteCache:
             POINTS.values()), list(POINTS.keys()), start_point, end_point)
         return fullPath
 
+    def _findPathOfListNodes(self, rm: RoverManager, point: Tuple[int, int], closests: List[Node], search_algorithm: SearchAlgorithm):
+        """Returns the closest possible node of the graph."""
+        for n in closests:
+            path = rm.findRoute(point[0], point[1], n.point[0], n.point[1], search_algorithm=search_algorithm)
+            if path:
+                return path, n
+        raise Exception('No path found for closest node of start or end.')
+
     def _findGraphPath(self, start: Node, end: Node):
+        """Depth First search algorithm to connect two points in the graph."""
         history = [start]
         aa = self._findHelper(start, end, history)
         if not aa:
@@ -185,15 +193,23 @@ class RouteCache:
                     return result
         return None
 
-    def _findClosest(self, point: Tuple[int, int]) -> Node:
-        node = self.nodes[0]
-        closestDistance = self._findDistance(self.nodes[0].point, point)
+    def _findClosestList(self, point: Tuple[int, int]) -> Node:
+        """Returns a list with the all the nodes ordered by distance of the point."""
+        nodes = [self.nodes[0]]
+        distances = [self._findDistance(self.nodes[0].point, point)]
         for i in range(1, len(self.nodes)):
-            currentDistance = self._findDistance(self.nodes[i].point, point)
-            if currentDistance < closestDistance:
-                closestDistance = currentDistance
-                node = self.nodes[i]
-        return node
+            newDistance = self._findDistance(self.nodes[i].point, point)
+            for y in range(len(distances)):
+                if newDistance < distances[y]:
+                    distances.insert(y, newDistance)
+                    nodes.insert(y, self.nodes[i])
+                    break
+                else:
+                    if y == len(distances) - 1:
+                        distances.append(newDistance)
+                        nodes.append(self.nodes[i])
+                        break
+        return nodes
 
     def _findDistance(self, pointA: Tuple[int, int], pointB: Tuple[int, int]) -> float:
         return math.sqrt((pointA[0] - pointB[0])**2 + (pointA[1] - pointB[1])**2)

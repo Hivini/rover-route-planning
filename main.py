@@ -5,10 +5,10 @@ import routes.routing_planner as rp
 import time
 from matplotlib import pyplot as plt
 
-START_X = 3300
-START_Y = 6800
-END_X = 2200
-END_Y = 8210
+START_X = 1435
+START_Y = 13000
+END_X = 4600
+END_Y = 3000
 
 logging.basicConfig(
     level=logging.INFO,
