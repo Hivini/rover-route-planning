@@ -135,10 +135,23 @@ class RouteCache:
         """Finds a path using the graph."""
         start_closests = self._findClosestList(start_point)
         end_closests = self._findClosestList(end_point)
-        start_path, start_closest = self._findPathOfListNodes(
+        if (self._findDistance(start_closests[0].point, start_point) > self._findDistance(end_point, start_point) and self._findDistance(end_closests[0].point, end_point) > self._findDistance(end_point, start_point)):
+            path = rm.findRoute(
+                start_point[0], start_point[1], end_point[0], end_point[1], search_algorithm)
+            rm.map_image.showImageWithSinglePath('Rover Route Planning', 'Mars Map Overview', path, list(
+                POINTS.values()), list(POINTS.keys()), start_point, end_point)
+            return path
+        start_node_paths = self._findPathOfListNodes(
             rm, start_point, start_closests, search_algorithm)
-        end_path, end_closest = self._findPathOfListNodes(
+        end_node_paths = self._findPathOfListNodes(
             rm, end_point, end_closests, search_algorithm)
+        if not start_node_paths or not end_node_paths:
+            path = rm.findRoute(
+                start_point[0], start_point[1], end_point[0], end_point[1], search_algorithm)
+            if not path:
+                raise Exception('No possible path could be found.')
+        start_path, start_closest = start_node_paths
+        end_path, end_closest = end_node_paths
         if self._findDistance(start_point, end_point) < self._findDistance(start_point, start_closest.point) + self._findDistance(end_point, end_closest.point):
             path = rm.findRoute(
                 start_point[0], start_point[1], end_point[0], end_point[1], search_algorithm)
@@ -172,7 +185,7 @@ class RouteCache:
                 point[0], point[1], n.point[0], n.point[1], search_algorithm=search_algorithm)
             if path:
                 return path, n
-        raise Exception('No path found for closest node of start or end.')
+        return None
 
     def _findGraphPath(self, start: Node, end: Node):
         """Depth First search algorithm to connect two points in the graph."""
