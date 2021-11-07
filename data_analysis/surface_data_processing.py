@@ -11,8 +11,7 @@ import copy
 import numpy as np
 from scipy.stats import kurtosis, skew
 from skimage.feature.texture import greycomatrix, greycoprops
-from os import listdir
-from os.path import isfile, join
+import glob
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -60,7 +59,8 @@ from matplotlib.colors import LightSource
 # ------------------------------------------------------------------------------------------------------------------
 
 DATA_PATH = 'surface_data'
-all_files = [f for f in listdir(DATA_PATH) if isfile(join(DATA_PATH, f))]
+# All files ending with .txt
+all_files = glob.glob('surface_data/**/*.obj', recursive=True)
 labels = np.array([
     'glmc_disimilarity',
     'glmc_correlation',
@@ -83,7 +83,7 @@ labels = np.array([
 all_data = []
 
 for file_name in all_files:
-    inputFile = open(DATA_PATH + '/' + file_name, 'rb')
+    inputFile = open(file_name, 'rb')
     data = pickle.load(inputFile)
     n_img = len(data)
 
