@@ -60,7 +60,8 @@ from matplotlib.colors import LightSource
 
 DATA_PATH = 'Tipo de terreno'
 # All files ending with .txt
-all_files = glob.glob('Tipo de terreno/**/*.obj', recursive=True)
+terrain_files = glob.glob('Tipo de terreno/**/*.obj', recursive=True)
+nav_files = glob.glob('Navegabilidad/**/*.obj', recursive=True)
 labels = np.array([
     'glmc_disimilarity',
     'glmc_correlation',
@@ -80,10 +81,12 @@ labels = np.array([
     'rise_skewness',
     'rise_kurtosis'])
 
-all_data = []
-y_values = []
+all_data_terrain = []
+y_values_terrain = []
+all_data_nav = []
+y_values_nav = []
 
-for file_name in all_files:
+for file_name in terrain_files:
     inputFile = open(file_name, 'rb')
     data = pickle.load(inputFile)
     n_img = len(data)
@@ -93,7 +96,7 @@ for file_name in all_files:
         # print("Image", i+1)
 
         # Append the class of the image.
-        y_values.append(data[i][0])
+        y_values_terrain.append(data[i][0])
 
         # Data
         surface = (data[i][2]-data[i][2].min()).astype(int)
@@ -163,14 +166,100 @@ for file_name in all_files:
             rise_skewness,
             rise_kurtosis]
 
-        all_data.append(image_data)
+        all_data_terrain.append(image_data)
 
-all_data = np.array(all_data)
+for file_name in nav_files:
+    inputFile = open(file_name, 'rb')
+    data = pickle.load(inputFile)
+    n_img = len(data)
+
+    for i in range(n_img):
+        # print("**********")
+        # print("Image", i+1)
+
+        # Append the class of the image.
+        y_values_nav.append(data[i][0])
+
+        # Data
+        surface = (data[i][2]-data[i][2].min()).astype(int)
+        glcm = greycomatrix(surface, distances=[5], angles=[0], levels=1024,
+                            symmetric=True, normed=True)
+        # print("GLCM - Disimilaridad: ", greycoprops(glcm, 'dissimilarity')[0, 0])
+        # print("GLCM - Correlación: ", greycoprops(glcm, 'correlation')[0, 0])
+
+        # Slope
+        slope = data[i][3]
+        # print("Max slope: ", slope.max())
+        # print("Min slope: ", slope.min())
+        # print("Slope variance: ", slope.var())
+        # print("Slope skewness: ", skew(slope.flatten()))
+        # print("Slope kurtosis: ", kurtosis(slope.flatten()))
+
+        # Depression
+        depression = data[i][4]
+        # print("Max depression: ", depression.max())
+        # print("Min depression: ", depression.min())
+        # print("Depression variance: ", depression.var())
+        # print("Depression skewness: ", skew(depression.flatten()))
+        # print("Depression kurtosis: ", kurtosis(depression.flatten()))
+
+        # Rise
+        rise = data[i][5]
+        # print("Max rise: ", rise.max())
+        # print("Min rise: ", rise.min())
+        # print("Rise variance: ", rise.var())
+        # print("Rise skewness: ", skew(rise.flatten()))
+        # print("Rise kurtosis: ", kurtosis(rise.flatten()))
+
+        glmc_disimilarity = greycoprops(glcm, 'dissimilarity')[0, 0]
+        glmc_correlation = greycoprops(glcm, 'correlation')[0, 0]
+        slope_max = slope.max()
+        slope_min = slope.min()
+        slope_variance = slope.var()
+        slope_skewness = skew(slope.flatten())
+        slope_kurtosis = kurtosis(slope.flatten())
+        depression_max = depression.max()
+        depression_min = depression.min()
+        depression_variance = depression.var()
+        depression_skewness = skew(depression.flatten())
+        depression_kurtosis = kurtosis(depression.flatten())
+        rise_max = rise.max()
+        rise_min = rise.min()
+        rise_variance = rise.var()
+        rise_skewness = skew(rise.flatten())
+        rise_kurtosis = kurtosis(rise.flatten())
+
+        image_data = [
+            glmc_disimilarity,
+            glmc_correlation,
+            slope_max,
+            slope_min,
+            slope_variance,
+            slope_skewness,
+            slope_kurtosis,
+            depression_max,
+            depression_min,
+            depression_variance,
+            depression_skewness,
+            depression_kurtosis,
+            rise_max,
+            rise_min,
+            rise_variance,
+            rise_skewness,
+            rise_kurtosis]
+
+        all_data_nav.append(image_data)
+
 labels = np.array(labels)
-y_values = np.array(y_values)
-np.save('surface_data', all_data)
+all_data_terrain = np.array(all_data_terrain)
+y_values_terrain = np.array(y_values_terrain)
+all_data_nav = np.array(all_data_nav)
+y_values_nav = np.array(y_values_nav)
+np.save('nav_data', all_data_terrain)
+np.save('nav_data_labels', y_values_terrain)
+np.save('terrain_data', all_data_nav)
+np.save('terrain_data_labels', y_values_nav)
 np.save('surface_columns_metadata', labels)
-np.save('surface_data_labels', y_values)
 
 
 # ------------------------------------------------------------------------------------------------------------------
