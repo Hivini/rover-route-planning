@@ -58,9 +58,9 @@ from matplotlib.colors import LightSource
 #   Process features of each image
 # ------------------------------------------------------------------------------------------------------------------
 
-DATA_PATH = 'surface_data'
+DATA_PATH = 'Tipo de terreno'
 # All files ending with .txt
-all_files = glob.glob('surface_data/**/*.obj', recursive=True)
+all_files = glob.glob('Tipo de terreno/**/*.obj', recursive=True)
 labels = np.array([
     'glmc_disimilarity',
     'glmc_correlation',
@@ -97,7 +97,7 @@ for file_name in all_files:
 
         # Data
         surface = (data[i][2]-data[i][2].min()).astype(int)
-        glcm = greycomatrix(surface, distances=[5], angles=[0], levels=512,
+        glcm = greycomatrix(surface, distances=[5], angles=[0], levels=1024,
                             symmetric=True, normed=True)
         # print("GLCM - Disimilaridad: ", greycoprops(glcm, 'dissimilarity')[0, 0])
         # print("GLCM - Correlación: ", greycoprops(glcm, 'correlation')[0, 0])
