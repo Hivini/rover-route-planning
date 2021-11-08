@@ -81,6 +81,7 @@ labels = np.array([
     'rise_kurtosis'])
 
 all_data = []
+y_values = []
 
 for file_name in all_files:
     inputFile = open(file_name, 'rb')
@@ -90,6 +91,9 @@ for file_name in all_files:
     for i in range(n_img):
         # print("**********")
         # print("Image", i+1)
+
+        # Append the class of the image.
+        y_values.append(data[i][0])
 
         # Data
         surface = (data[i][2]-data[i][2].min()).astype(int)
@@ -163,8 +167,10 @@ for file_name in all_files:
 
 all_data = np.array(all_data)
 labels = np.array(labels)
+y_values = np.array(y_values)
 np.save('surface_data', all_data)
-np.save('surface_labels', labels)
+np.save('surface_columns_metadata', labels)
+np.save('surface_data_labels', y_values)
 
 
 # ------------------------------------------------------------------------------------------------------------------
