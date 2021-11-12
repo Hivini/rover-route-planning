@@ -65,17 +65,17 @@ labels = np.array([
     'glmc_disimilarity',
     'glmc_correlation',
     'slope_max',
-    'slope_min',
+    'slope_mean',
     'slope_variance',
     'slope_skewness',
     'slope_kurtosis',
     'depression_max',
-    'depression_min',
+    'depression_mean',
     'depression_variance',
     'depression_skewness',
     'depression_kurtosis',
     'rise_max',
-    'rise_min',
+    'rise_mean',
     'rise_variance',
     'rise_skewness',
     'rise_kurtosis'])
@@ -133,17 +133,17 @@ for file_name in terrain_files:
         glmc_disimilarity = greycoprops(glcm, 'dissimilarity')[0, 0]
         glmc_correlation = greycoprops(glcm, 'correlation')[0, 0]
         slope_max = slope.max()
-        slope_min = slope.min()
+        slope_mean = slope.mean()
         slope_variance = slope.var()
         slope_skewness = skew(slope.flatten())
         slope_kurtosis = kurtosis(slope.flatten())
         depression_max = depression.max()
-        depression_min = depression.min()
+        depression_mean = depression.mean()
         depression_variance = depression.var()
         depression_skewness = skew(depression.flatten())
         depression_kurtosis = kurtosis(depression.flatten())
         rise_max = rise.max()
-        rise_min = rise.min()
+        rise_mean = rise.mean()
         rise_variance = rise.var()
         rise_skewness = skew(rise.flatten())
         rise_kurtosis = kurtosis(rise.flatten())
@@ -152,17 +152,17 @@ for file_name in terrain_files:
             glmc_disimilarity,
             glmc_correlation,
             slope_max,
-            slope_min,
+            slope_mean,
             slope_variance,
             slope_skewness,
             slope_kurtosis,
             depression_max,
-            depression_min,
+            depression_mean,
             depression_variance,
             depression_skewness,
             depression_kurtosis,
             rise_max,
-            rise_min,
+            rise_mean,
             rise_variance,
             rise_skewness,
             rise_kurtosis]
@@ -217,17 +217,17 @@ for file_name in nav_files:
         glmc_disimilarity = greycoprops(glcm, 'dissimilarity')[0, 0]
         glmc_correlation = greycoprops(glcm, 'correlation')[0, 0]
         slope_max = slope.max()
-        slope_min = slope.min()
+        slope_mean = slope.mean()
         slope_variance = slope.var()
         slope_skewness = skew(slope.flatten())
         slope_kurtosis = kurtosis(slope.flatten())
         depression_max = depression.max()
-        depression_min = depression.min()
+        depression_mean = depression.mean()
         depression_variance = depression.var()
         depression_skewness = skew(depression.flatten())
         depression_kurtosis = kurtosis(depression.flatten())
         rise_max = rise.max()
-        rise_min = rise.min()
+        rise_mean = rise.mean()
         rise_variance = rise.var()
         rise_skewness = skew(rise.flatten())
         rise_kurtosis = kurtosis(rise.flatten())
@@ -236,17 +236,17 @@ for file_name in nav_files:
             glmc_disimilarity,
             glmc_correlation,
             slope_max,
-            slope_min,
+            slope_mean,
             slope_variance,
             slope_skewness,
             slope_kurtosis,
             depression_max,
-            depression_min,
+            depression_mean,
             depression_variance,
             depression_skewness,
             depression_kurtosis,
             rise_max,
-            rise_min,
+            rise_mean,
             rise_variance,
             rise_skewness,
             rise_kurtosis]
@@ -263,8 +263,3 @@ np.save('terrain_data_labels', y_values_terrain)
 np.save('nav_data', all_data_nav)
 np.save('nav_data_labels', y_values_nav)
 np.save('surface_columns_metadata', labels)
-
-
-# ------------------------------------------------------------------------------------------------------------------
-#   End of file
-# ------------------------------------------------------------------------------------------------------------------
