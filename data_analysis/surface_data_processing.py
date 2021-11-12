@@ -58,7 +58,6 @@ from matplotlib.colors import LightSource
 #   Process features of each image
 # ------------------------------------------------------------------------------------------------------------------
 
-DATA_PATH = 'Tipo de terreno'
 # All files ending with .txt
 terrain_files = glob.glob('Tipo de terreno/**/*.obj', recursive=True)
 nav_files = glob.glob('Navegabilidad/**/*.obj', recursive=True)
@@ -96,6 +95,8 @@ for file_name in terrain_files:
         # print("Image", i+1)
 
         # Append the class of the image.
+        if (data[i][0] == 0):
+            continue
         y_values_terrain.append(data[i][0])
 
         # Data
@@ -178,6 +179,8 @@ for file_name in nav_files:
         # print("Image", i+1)
 
         # Append the class of the image.
+        if (data[i][0] == 0):
+            continue
         y_values_nav.append(data[i][0])
 
         # Data
@@ -255,10 +258,10 @@ all_data_terrain = np.array(all_data_terrain)
 y_values_terrain = np.array(y_values_terrain)
 all_data_nav = np.array(all_data_nav)
 y_values_nav = np.array(y_values_nav)
-np.save('nav_data', all_data_terrain)
-np.save('nav_data_labels', y_values_terrain)
-np.save('terrain_data', all_data_nav)
-np.save('terrain_data_labels', y_values_nav)
+np.save('terrain_data', all_data_terrain)
+np.save('terrain_data_labels', y_values_terrain)
+np.save('nav_data', all_data_nav)
+np.save('nav_data_labels', y_values_nav)
 np.save('surface_columns_metadata', labels)
 
 
