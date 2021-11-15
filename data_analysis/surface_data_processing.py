@@ -17,6 +17,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.colors import LightSource
+from sklearn import preprocessing
 
 # ------------------------------------------------------------------------------------------------------------------
 #   Show images
@@ -59,8 +60,8 @@ from matplotlib.colors import LightSource
 # ------------------------------------------------------------------------------------------------------------------
 
 # All files ending with .txt
-terrain_files = glob.glob('Tipo de terreno/**/*.obj', recursive=True)
-nav_files = glob.glob('Navegabilidad/**/*.obj', recursive=True)
+terrain_files = glob.glob('terreno/**/*.obj', recursive=True)
+nav_files = glob.glob('navegabilidad/**/*.obj', recursive=True)
 labels = np.array([
     'glmc_disimilarity',
     'glmc_correlation',
@@ -253,10 +254,13 @@ for file_name in nav_files:
 
         all_data_nav.append(image_data)
 
+
 labels = np.array(labels)
 all_data_terrain = np.array(all_data_terrain)
+all_data_terrain = preprocessing.normalize(all_data_terrain, axis = 0)
 y_values_terrain = np.array(y_values_terrain)
 all_data_nav = np.array(all_data_nav)
+all_data_nav = preprocessing.normalize(all_data_nav, axis = 0)
 y_values_nav = np.array(y_values_nav)
 np.save('terrain_data', all_data_terrain)
 np.save('terrain_data_labels', y_values_terrain)
