@@ -28,7 +28,6 @@ class RoverManager(object):
         """
         logging.info(
             'Finding route for x: %d y: %d to x: %d y: %d', sx, sy, ex, ey)
-        # TODO: Validate points
         start_point = convertToRC(sx, sy, self.map_image, MAP_SCALE)
         end_point = convertToRC(ex, ey, self.map_image, MAP_SCALE)
         logging.info('Transformed route is x: %d y: %d to x: %d y: %d',

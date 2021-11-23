@@ -22,6 +22,7 @@ m = RouteCache(manager)
 start = time.time()
 path = m.findPath(manager, (START_X, START_Y), (END_X, END_Y))
 end = time.time()
+manager.map_image.showImageRegions('Window', 'Title')
 if path:
     logging.info('Time elapsed: %.4fs', (end - start))
     plt.show()
