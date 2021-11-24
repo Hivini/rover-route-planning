@@ -1,6 +1,7 @@
 # route_finder
 import math
 import numpy as np
+import routes.region_classifier as rc
 
 from typing import Tuple
 from simpleai.search import SearchProblem
@@ -9,7 +10,7 @@ from simpleai.search import SearchProblem
 class RouteFinder(SearchProblem):
 
     def __init__(self, height_map: np.array, max_row: int, max_col: int, start: Tuple[int, int],
-                 end: Tuple[int, int], max_height: float, invalid_height: int = None) -> None:
+                 end: Tuple[int, int], max_height: float, invalid_height: int = None, navMatrix=None) -> None:
         self.height_map = height_map
         self.start = start
         self.end = end
@@ -17,6 +18,7 @@ class RouteFinder(SearchProblem):
         self.invalid_height = invalid_height
         self.max_row = max_row
         self.max_col = max_col
+        self.navMatrix = navMatrix
         SearchProblem.__init__(self, self.start)
 
     def actions(self, state: Tuple[int, int]):
@@ -47,35 +49,67 @@ class RouteFinder(SearchProblem):
         if move_left:
             left = self.height_map[row][col - 1]
             if left != self.invalid_height and abs(current_height - left) < self.max_height:
-                actions.append('ML')
+                valid = True
+                if self.navMatrix != None:
+                    valid = self._isPointValidNav(row, col - 1)
+                if valid:
+                    actions.append('ML')
         if move_right:
             right = self.height_map[row][col + 1]
             if right != self.invalid_height and abs(current_height - right) < self.max_height:
-                actions.append('MR')
+                valid = True
+                if self.navMatrix != None:
+                    valid = self._isPointValidNav(row, col + 1)
+                if valid:
+                    actions.append('MR')
         if move_up:
             up = self.height_map[row - 1][col]
             if up != self.invalid_height and abs(current_height - up) < self.max_height:
-                actions.append('MU')
+                valid = True
+                if self.navMatrix != None:
+                    valid = self._isPointValidNav(row - 1, col)
+                if valid:
+                    actions.append('MU')
         if move_down:
             down = self.height_map[row + 1][col]
             if down != self.invalid_height and abs(current_height - down) < self.max_height:
-                actions.append('MD')
+                valid = True
+                if self.navMatrix != None:
+                    valid = self._isPointValidNav(row + 1, col)
+                if valid:
+                    actions.append('MD')
         if move_left and move_up:
             d_left_up = self.height_map[row - 1][col - 1]
             if d_left_up != self.invalid_height and abs(current_height - d_left_up) < self.max_height:
-                actions.append('MDLU')
+                valid = True
+                if self.navMatrix != None:
+                    valid = self._isPointValidNav(row - 1, col - 1)
+                if valid:
+                    actions.append('MDLU')
         if move_left and move_down:
             d_left_down = self.height_map[row + 1][col - 1]
             if d_left_down != self.invalid_height and abs(current_height - d_left_down) < self.max_height:
-                actions.append('MDLD')
+                valid = True
+                if self.navMatrix != None:
+                    valid = self._isPointValidNav(row + 1, col - 1)
+                if valid:
+                    actions.append('MDLD')
         if move_right and move_up:
             d_right_up = self.height_map[row - 1][col + 1]
             if d_right_up != self.invalid_height and abs(current_height - d_right_up) < self.max_height:
-                actions.append('MDRU')
+                valid = True
+                if self.navMatrix != None:
+                    valid = self._isPointValidNav(row - 1, col + 1)
+                if valid:
+                    actions.append('MDRU')
         if move_right and move_down:
             d_right_down = self.height_map[row + 1][col + 1]
             if d_right_down != self.invalid_height and abs(current_height - d_right_down) < self.max_height:
-                actions.append('MDRD')
+                valid = True
+                if self.navMatrix != None:
+                    valid = self._isPointValidNav(row + 1, col + 1)
+                if valid:
+                    actions.append('MDRD')
         return actions
 
     def result(self, state, action):
@@ -100,7 +134,7 @@ class RouteFinder(SearchProblem):
             return (state[0] + 1, state[1] - 1)
         elif action == 'MDLU':
             return (state[0] - 1, state[1] - 1)
-    
+
     def is_goal(self, state):
         return state == self.end
 
@@ -129,3 +163,11 @@ class RouteFinder(SearchProblem):
 
         return math.sqrt(float(abs(end_x - x)**2 + abs(end_y - y)**2))
 
+    def _isPointValidNav(self, row, column):
+        # Get the point in the nav matrix
+        r = row // rc.SUBIMAGE_SIZE
+        c = column // rc.SUBIMAGE_SIZE
+        # Check if it exists
+        if (r >= len(self.navMatrix) or c >= len(self.navMatrix[0])):
+            return False
+        return self.navMatrix[r][c]
