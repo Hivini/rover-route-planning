@@ -36,7 +36,7 @@ class NpyImage(object):
         self.scale = scale
         logging.info('Image -> rows:%d, columns:%d, scale:%.4f',
                      self.rows_n, self.columns_n, self.scale)
-        self.regionClassifier = RegionClassifier(self.data, self.rows_n, self.columns_n)
+        self.regionClassifier = RegionClassifier(self.rows_n, self.columns_n)
 
     def setBaseImage(self, window_title: str, figure_title: str):
         """Setup the image visualization using Matplotlib."""

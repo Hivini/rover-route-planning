@@ -1,4 +1,4 @@
-import copy
+import os
 import numpy as np
 import richdem as rd
 import pickle
@@ -6,9 +6,6 @@ import pickle
 from typing import Tuple, List
 from dataclasses import dataclass
 from skimage.transform import downscale_local_mean
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-from matplotlib.colors import LightSource
 from skimage.feature.texture import greycomatrix, greycoprops
 from scipy.stats import kurtosis, skew
 from sklearn import preprocessing
@@ -30,14 +27,21 @@ class BoundingRectangle:
 
 class RegionClassifier:
 
-    def __init__(self, heightMap: np.array, rows: int, columns: int) -> None:
+    def __init__(self, rows: int, columns: int) -> None:
         self._createMapSurfaces()
-        self._createRegions(heightMap, rows, columns)
+        if not os.path.isfile('regions.pkl') or not os.path.isfile('navMatrix.pkl'):
+            self._createRegions(rows, columns)
+        else:
+            self.regions = pickle.load(open('regions.pkl', 'rb'))
+            self.navMatrix = pickle.load(open('navMatrix.pkl', 'rb'))
 
-    def _createRegions(self, map: np.array, rows: int, columns: int):
-        loaded_model = pickle.load(open('routes/model/nav_decision_tree.pkl', 'rb'))
+    def _createRegions(self, rows: int, columns: int):
+        loaded_model = pickle.load(
+            open('routes/model/nav_decision_tree.pkl', 'rb'))
         regions: List[BoundingRectangle] = []
+        navMatrix = []
         for i in range(0, rows - rows % SUBIMAGE_SIZE, SUBIMAGE_SIZE):
+            currentMatrix = []
             for y in range(0, columns - columns % 20, SUBIMAGE_SIZE):
                 rect = BoundingRectangle()
                 rect.topLeft = (y, i)
@@ -56,7 +60,13 @@ class RegionClassifier:
                     else:
                         rect.isNav = False
                 regions.append(rect)
+                # Add to matrix
+                currentMatrix.append(rect.isNav)
+            navMatrix.append(currentMatrix)
         self.regions = regions
+        self.navMatrix = navMatrix
+        pickle.dump(self.regions, open('regions.pkl', 'wb'))
+        pickle.dump(self.navMatrix,  open('navMatrix.pkl', 'wb'))
 
     def _determineNavegability(self, data, model):
         # Data
