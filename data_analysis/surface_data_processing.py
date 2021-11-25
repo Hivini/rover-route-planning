@@ -257,10 +257,10 @@ for file_name in nav_files:
 
 labels = np.array(labels)
 all_data_terrain = np.array(all_data_terrain)
-all_data_terrain = preprocessing.normalize(all_data_terrain, axis = 0)
+all_data_terrain = preprocessing.normalize(all_data_terrain, axis = 1)
 y_values_terrain = np.array(y_values_terrain)
 all_data_nav = np.array(all_data_nav)
-all_data_nav = preprocessing.normalize(all_data_nav, axis = 0)
+all_data_nav = preprocessing.normalize(all_data_nav, axis = 1)
 y_values_nav = np.array(y_values_nav)
 np.save('terrain_data', all_data_terrain)
 np.save('terrain_data_labels', y_values_terrain)

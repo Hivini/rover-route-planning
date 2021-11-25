@@ -6,9 +6,8 @@ from scipy.stats import kurtosis
 nav_data = np.load(f'processed_nav_data.npy')
 nav_labels = np.load(f'nav_data_labels.npy')
 
-file = open('./models/nav_knn.pkl', 'rb')
+file = open('nav_knn.pkl', 'rb')
 model = pickle.load(file)
-model.fit(nav_data, nav_labels)
 
 inputFile = open('./maps/variado2.obj', 'rb')
 data = pickle.load(inputFile)
