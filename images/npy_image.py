@@ -154,6 +154,7 @@ class NpyImage(object):
                          20 * rp.MAP_SCALE, color=color, alpha=0.5))
         cbar = fig.colorbar(image, ax=ax)
         cbar.ax.set_ylabel('Height (m)')
+        return fig, image, ax
 
     def showImageWithPathSimple(self, window_title: str, figure_title: str,
                                 path: List[Tuple[int, int]], start_point: Tuple[int, int],
@@ -171,4 +172,20 @@ class NpyImage(object):
         plt.plot([start_point[0]], [start_point[1]],
                  marker='o', markersize=8, color="green")
         plt.plot([end_point[0]], [end_point[1]],
-                 marker='o', markersize=8, color="red")
+                 marker='*', markersize=8, color="red")
+
+    def showImageWithPathSimpleWithRegions(self, window_title: str, figure_title: str,
+                                           path: List[Tuple[int, int]], start_point: Tuple[int, int],
+                                           end_point: Tuple[int, int]) -> None:
+        """Same us showImage but with the path as a line."""
+        fig, image, ax = self.showImageRegions(window_title, figure_title)
+        newPath = []
+        for x, y in path:
+            newPath.append(convertToImagePoint(x, y, self, rp.MAP_SCALE))
+        x, y = zip(*newPath)
+        line = mlines.Line2D(x, y, lw=2, color='pink')
+        ax.add_line(line)
+        plt.plot([start_point[0]], [start_point[1]],
+                 marker='o', markersize=8, color="orange")
+        plt.plot([end_point[0]], [end_point[1]],
+                 marker='*', markersize=8, color="yellow")
